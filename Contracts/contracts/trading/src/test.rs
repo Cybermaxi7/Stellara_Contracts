@@ -1,8 +1,12 @@
 #![cfg(test)]
 
 use super::*;
-use soroban_sdk::{testutils::{Address as _, Ledger}, Vec, symbol_short, vec, Env};
 use shared::governance::ProposalStatus;
+use soroban_sdk::{
+    symbol_short,
+    testutils::{Address as _, Ledger},
+    vec, Env, Vec,
+};
 
 // Use the auto-generated client from #[contractimpl]
 use crate::UpgradeableTradingContractClient;
@@ -83,14 +87,8 @@ fn test_upgrade_proposal_creation() {
 
     let new_hash = symbol_short!("v2hash");
     let description = symbol_short!("Upgrade");
-    let proposal_id = client.propose_upgrade(
-        &admin,
-        &new_hash,
-        &description,
-        &approvers,
-        &1u32,
-        &3600u64,
-    );
+    let proposal_id =
+        client.propose_upgrade(&admin, &new_hash, &description, &approvers, &1u32, &3600u64);
 
     assert_eq!(proposal_id, 1);
 

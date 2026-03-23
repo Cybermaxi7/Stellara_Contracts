@@ -440,4 +440,3 @@ impl AcademyVestingContract {
         Ok((admin, token, governance))
     }
 }
-
