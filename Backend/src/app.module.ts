@@ -9,10 +9,11 @@ import { DatabaseModule } from './database.module';
 import { IndexerModule } from './indexer/indexer.module';
 import { NotificationModule } from './notification/notification.module';
 import { AuthModule } from './auth/auth.module';
-import { TenantModule } from './tenant/tenant.module';
-import { ConfigManagerModule } from './config-manager/config-manager.module';
+import { WebsocketModule } from './websocket/websocket.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from '@nestjs/throttler-storage-redis';
+import { LoggingModule } from './logging/logging.module';
+import { ErrorHandlingModule } from './common/error-handling.module';
 
 @Module({
   imports: [
@@ -20,6 +21,12 @@ import { ThrottlerStorageRedisService } from '@nestjs/throttler-storage-redis';
       isGlobal: true,
       envFilePath: '.env',
       validate: validateEnv,
+    }),
+    // Structured logging with correlation IDs and performance tracing
+    LoggingModule.forRoot({
+      enableRequestLogging: true,
+      enablePerformanceTracing: true,
+      defaultContext: 'Application',
     }),
     // Global rate limiting with Redis storage
     ThrottlerModule.forRootAsync({
@@ -33,13 +40,14 @@ import { ThrottlerStorageRedisService } from '@nestjs/throttler-storage-redis';
         }),
       }),
     }),
+    // Error handling with global filters
+    ErrorHandlingModule,
     ReputationModule,
     DatabaseModule,
     IndexerModule,
     NotificationModule,
     AuthModule,
-    TenantModule,
-    ConfigManagerModule,
+    WebsocketModule,
   ],
   controllers: [AppController, UserController],
   providers: [AppService],

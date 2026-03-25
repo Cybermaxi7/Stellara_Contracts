@@ -21,6 +21,15 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
+    "db:migrate:create": "prisma migrate dev --create-only",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:status": "prisma migrate status",
+    "db:migrate:reset": "prisma migrate reset",
+    "db:migrate:diff": "prisma migrate diff --from-migrations ./prisma/migrations --to-schema-datamodel ./prisma/schema.prisma --shadow-database-url $SHADOW_DATABASE_URL",
+    "db:rollback": "ts-node prisma/scripts/rollback.ts",
+    "db:rollback:list": "ts-node prisma/scripts/rollback.ts --list",
+    "db:seed": "ts-node prisma/seed.ts",
+    "db:pre-deploy": "ts-node prisma/scripts/pre-deploy-check.ts",
     "db:studio": "prisma studio",
     "prepare": "cd .. && husky install backend/.husky"
   },
@@ -34,8 +43,10 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^10.4.22",
+    "@nestjs/platform-socket.io": "^10.4.22",
     "@nestjs/schedule": "^4.1.2",
     "@nestjs/typeorm": "^11.0.0",
+    "@nestjs/websockets": "^10.4.22",
     "@sendgrid/mail": "^8.1.6",
     "@stellar/stellar-base": "^11.0.0",
     "@stellar/stellar-sdk": "^11.3.0",
@@ -43,16 +54,23 @@
     "cache-manager-ioredis-yet": "^2.1.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "cls-hooked": "^4.2.2",
     "cookie-parser": "^1.4.7",
     "ioredis": "^5.10.1",
     "ipfs-http-client": "^60.0.1",
+    "nestjs-pino": "^4.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.18.0",
+    "pino": "^9.0.0",
+    "pino-http": "^10.0.0",
+    "pino-pretty": "^11.0.0",
     "reflect-metadata": "^0.1.14",
     "rxjs": "^7.8.2",
     "sharp": "^0.34.5",
-    "typeorm": "^0.3.28"
+    "socket.io": "^4.8.3",
+    "typeorm": "^0.3.28",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -63,6 +81,7 @@
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",
     "@types/supertest": "^2.0.12",
+    "@types/uuid": "^10.0.0",
     "@types/web-push": "^3.6.4",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
@@ -104,5 +123,8 @@
       "eslint --fix",
       "prettier --write"
     ]
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
