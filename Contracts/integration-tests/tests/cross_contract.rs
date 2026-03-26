@@ -4,6 +4,7 @@ extern crate std;
 
 use academy_rewards::AcademyRewardsContract;
 use messaging::UpgradeableMessagingContract;
+use shared::circuit_breaker::CircuitBreakerConfig;
 use shared::governance::ProposalStatus;
 use social_rewards::SocialRewardsContract;
 use soroban_sdk::{
@@ -11,7 +12,6 @@ use soroban_sdk::{
     testutils::{Address as _, Ledger},
     token, Address, Env, String, Vec,
 };
-use shared::circuit_breaker::CircuitBreakerConfig;
 use trading::UpgradeableTradingContract;
 
 #[contract]
