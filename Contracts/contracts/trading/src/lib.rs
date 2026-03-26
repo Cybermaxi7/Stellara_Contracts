@@ -148,43 +148,48 @@ fn check_and_consume_trade_rate_limit(env: &Env, trader: &Address) -> Result<(),
     // 🚀 DISABLE rate limiting in test builds
     #[cfg(test)]
     {
-        return Ok(());
+        let _ = env;
+        let _ = trader;
+        Ok(())
     }
 
-    let cfg = read_rate_limit_config(env);
-
-    if cfg.window_secs == 0
-        || cfg.user_limit == 0
-        || cfg.global_limit == 0
-        || cfg.premium_user_limit == 0
+    #[cfg(not(test))]
     {
-        return Err(TradeError::InvalidRateLimitConfig);
+        let cfg = read_rate_limit_config(env);
+
+        if cfg.window_secs == 0
+            || cfg.user_limit == 0
+            || cfg.global_limit == 0
+            || cfg.premium_user_limit == 0
+        {
+            return Err(TradeError::InvalidRateLimitConfig);
+        }
+
+        let now = env.ledger().timestamp();
+        let window = now / cfg.window_secs;
+
+        let current_user = get_user_window_usage(env, trader, window);
+        let current_global = get_global_window_usage(env, window);
+
+        let allowed_user_limit = if is_premium_user(env, trader) {
+            cfg.premium_user_limit
+        } else {
+            cfg.user_limit
+        };
+
+        if current_user >= allowed_user_limit {
+            return Err(TradeError::RateLimitExceeded);
+        }
+
+        if current_global >= cfg.global_limit {
+            return Err(TradeError::GlobalRateLimitExceeded);
+        }
+
+        set_user_window_usage(env, trader, window, current_user + 1);
+        set_global_window_usage(env, window, current_global + 1);
+
+        Ok(())
     }
-
-    let now = env.ledger().timestamp();
-    let window = now / cfg.window_secs;
-
-    let current_user = get_user_window_usage(env, trader, window);
-    let current_global = get_global_window_usage(env, window);
-
-    let allowed_user_limit = if is_premium_user(env, trader) {
-        cfg.premium_user_limit
-    } else {
-        cfg.user_limit
-    };
-
-    if current_user >= allowed_user_limit {
-        return Err(TradeError::RateLimitExceeded);
-    }
-
-    if current_global >= cfg.global_limit {
-        return Err(TradeError::GlobalRateLimitExceeded);
-    }
-
-    set_user_window_usage(env, trader, window, current_user + 1);
-    set_global_window_usage(env, window, current_global + 1);
-
-    Ok(())
 }
 
 #[contractimpl]
