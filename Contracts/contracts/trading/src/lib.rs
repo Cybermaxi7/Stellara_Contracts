@@ -302,7 +302,7 @@ impl UpgradeableTradingContract {
         let trade = Trade {
             id: trade_id,
             trader: trader.clone(),
-            pair,
+            pair: pair.clone(),
             signed_amount,
             price,
             timestamp: current_timestamp,
