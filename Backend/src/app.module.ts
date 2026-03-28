@@ -64,7 +64,7 @@ import { PredictiveSettlementModule } from './predictive-settlement/predictive-s
 import { HFTModule } from './hft/hft.module';
 import { QuantumCryptoModule } from './crypto/quantum/quantum-crypto.module';
 import { AIAuditorModule } from './ai-auditor/ai-auditor.module';
-
+import { VoiceTradingModule } from './voice-trading/voice-trading.module';
 
 @Module({
   imports: [
@@ -153,6 +153,7 @@ import { AIAuditorModule } from './ai-auditor/ai-auditor.module';
     HFTModule,
     QuantumCryptoModule,
     AIAuditorModule,
+    VoiceTradingModule,
 
   ],
   controllers: [AppController, UserController, DocsController],
